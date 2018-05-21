@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
-const { databaseCredentials } = require('./config');
+const { databaseCredentials } = require('../config');
 
 let { name, url } = databaseCredentials;
 
