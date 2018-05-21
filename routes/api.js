@@ -2,17 +2,6 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var db = require('../models/database');
-var assert = require('assert')
-
-var connect = db.createConnection(function (q) {
-    // return q;
-    var collection = q.collection('users')
-    collection.find({}).toArray(function (err, docs) {
-        assert.equal(err, null);
-        console.log("Found the following records");
-        console.log(docs)
-    })
-});
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -37,14 +26,12 @@ router.post('/verifyToken', function (req, res, next) {
     } catch (ex) {
         res.send({ status: 401, message: ex.message })
     }
-
-    // res.send({
-    //   verify
-    // })
 });
 
-router.get('/db', function (req, res, next) {
-
+router.get('/getEntity/:table', function (req, res, next) {
+    db.Get(req.params.table, function(response){
+        res.send({response})
+    })
 })
 
 module.exports = router;

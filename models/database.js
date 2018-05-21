@@ -1,16 +1,33 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const { databaseCredentials } = require('./config');
+
+let { name, url } = databaseCredentials;
 
 // Connection URL
-const url = 'mongodb://localhost:27017';
-const dbName = 'myproject';
-
-exports.createConnection = (cb) => {
-    return MongoClient.connect('mongodb://localhost:27017', function (err, client) {
-        assert.equal(null, err);
-        console.log("Connected successfully to server");
-        const db = client.db('test');
+var createConnection = (cb) => {
+    return MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
+        const db = client.db(name);
         cb(db);
         client.close();
+    });
+}
+
+exports.Get = (table, callback) => {
+    var connect = createConnection(function (q) {
+        var collection = q.collection('users');
+        collection.find({}).toArray(function (err, docs) {
+            if (err) {
+                callback({
+                    err: err,
+                    status: 403
+                })
+            } else {
+                callback({
+                    data: docs,
+                    status: 200
+                })
+            }
+        });
     });
 }
