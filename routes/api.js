@@ -11,20 +11,36 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/authenticate', function (req, res, next) {
-    // console.log(typeof req.body);
+    console.log(req.body);
     if (!req.body.email) {
         res.send({ message: 'email is not defined', status: 403 })
     } else if (!req.body.password) {
         res.send({ message: 'password is not defined', status: 403 })
-    }else{
-        res.send({
-            body: req.body
-        });
+    } else {
+        db.Get('users', {
+            email: req.body.email
+        }).then(function (response) {
+            if (response.lists.length) {
+                bcrypt.compare(req.body.password, response.lists[0].password, function (err, correct) {
+                    if (correct) {
+                        var token = jwt.sign({
+                            exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                        }, secretKey);
+                        res.send({
+                            userId: response.lists[0]._id,
+                            token,
+                            message: 'Successfully authenticated.',
+                            status: 200
+                        })
+                    } else {
+                        res.send({ message: 'Incorrect password.', status: 403 });
+                    }
+                });
+            } else {
+                res.send({ message: 'Invalid username' });
+            }
+        })
     }
-    // var token = jwt.sign({
-    //     exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    // }, secretKey);
-    // res.send({ token });
 });
 
 router.post('/verifyToken', function (req, res, next) {
@@ -42,6 +58,7 @@ router.get('/getEntity/:table', function (req, res, next) {
             response
         })
     }).catch(function (err) {
+        console.log(err)
         res.send({
             err
         })

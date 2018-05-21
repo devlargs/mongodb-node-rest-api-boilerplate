@@ -12,20 +12,22 @@ var createConnection = (cb) => {
     });
 }
 
-exports.Get = (table) => {
+exports.Get = (entity, query = {}) => {
     return new Promise((resolve, reject) => {
-        if (table) {
+        if (entity) {
             var connect = createConnection((q) => {
-                q.collection(table).find({}).toArray((err, lists) => {
+                q.collection(entity).find(query).toArray((err, lists) => {
                     if (err) {
                         reject({ err, status: 403 })
                     } else {
                         resolve({ lists, status: 200 })
                     }
-                })
+                });
+
+
             })
         } else {
-            reject({ message: 'Invalid table' })
+            reject({ message: 'Invalid entity' })
         }
 
     })
