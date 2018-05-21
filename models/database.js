@@ -4,7 +4,6 @@ const { databaseCredentials } = require('./config');
 
 let { name, url } = databaseCredentials;
 
-// Connection URL
 var createConnection = (cb) => {
     return MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
         const db = client.db(name);
@@ -13,21 +12,21 @@ var createConnection = (cb) => {
     });
 }
 
-exports.Get = (table, callback) => {
-    var connect = createConnection(function (q) {
-        var collection = q.collection('users');
-        collection.find({}).toArray(function (err, docs) {
-            if (err) {
-                callback({
-                    err: err,
-                    status: 403
+exports.Get = (table) => {
+    return new Promise((resolve, reject) => {
+        if (table) {
+            var connect = createConnection((q) => {
+                q.collection(table).find({}).toArray((err, lists) => {
+                    if (err) {
+                        reject({ err, status: 403 })
+                    } else {
+                        resolve({ lists, status: 200 })
+                    }
                 })
-            } else {
-                callback({
-                    data: docs,
-                    status: 200
-                })
-            }
-        });
-    });
+            })
+        } else {
+            reject({ message: 'Invalid table' })
+        }
+
+    })
 }

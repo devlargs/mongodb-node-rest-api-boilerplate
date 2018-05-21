@@ -29,9 +29,15 @@ router.post('/verifyToken', function (req, res, next) {
 });
 
 router.get('/getEntity/:table', function (req, res, next) {
-    db.Get(req.params.table, function(response){
-        res.send({response})
+    db.Get(req.params.table).then(function (response) {
+        res.send({
+            response
+        })
+    }).catch(function (err) {
+        res.send({
+            err
+        })
     })
-})
+});
 
 module.exports = router;
