@@ -66,21 +66,14 @@ router.use(function (req, res, next) {
 });
 
 router.get('/getEntity/:table', function (req, res, next) {
-    let params = {
-        table: req.params.table
-    };
-
-    if (req.params.query) {
-        if (req.params.query.id) {
-            params.id = req.params.query.id
-        }
-    }
-
-    api.Get(params).then((response) => {
-        res.send({ response })
+    api.Get({
+        table: req.params.table,
+        ...req.query
+    }).then((response) => {
+        res.send({ ...response })
     }).catch((err) => {
         res.send({ err })
-    })
+    });
 });
 
 module.exports = router;
