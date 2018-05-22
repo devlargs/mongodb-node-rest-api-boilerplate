@@ -76,4 +76,21 @@ router.get('/getEntity/:table', function (req, res, next) {
     });
 });
 
+router.post('/postEntity/:table', function (req, res, next) {
+    api.Post({
+        table: req.params.table,
+        formData: {
+            name: 'Ralph Largo',
+            age: 22,
+            sexPartner: 'Jolina Estabillo'
+        }
+    }).then(response => {
+        res.send({ ...response })
+    }).catch(err => {
+        res.send({
+            err
+        })
+    })
+})
+
 module.exports = router;

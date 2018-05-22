@@ -47,3 +47,22 @@ exports.Get = (params) => {
         })
     });
 };
+
+exports.Post = (params) => {
+    return new Promise((resolve, reject) => {
+        createConnection(q => {
+            var a = q.collection(params.table);
+            q.collection(params.table).insertOne(params.formData, function (err, lists) {
+                if (err) {
+                    reject({ status: 403, err })
+                } else {
+                    resolve({
+                        inserted: lists.ops,
+                        length: lists.ops.length,
+                        status: 200
+                    })
+                }
+            })
+        })
+    })
+}
