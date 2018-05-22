@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
-const { databaseCredentials } = require('../config');
+const { database } = require('../config');
 
-let { name, url } = databaseCredentials;
+let { name, url } = database;
 
 exports.createConnection = (cb) => {
     return MongoClient.connect(url, { useNewUrlParser: true }, function (err, client) {
