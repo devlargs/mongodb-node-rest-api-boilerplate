@@ -6,6 +6,5 @@ exports.databaseCredentials = {
     password: 'admin',
     username: 'admin'
 };
-
-
-exports.secretKey = 'secret'
+exports.encryptionPassword = 'm34j8fhcltu@djchqnsju924uj';
+exports.secretKey = 'secret';
