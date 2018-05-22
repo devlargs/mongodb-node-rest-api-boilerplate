@@ -7,6 +7,14 @@ var api = require('../models/api');
 var { decrypt, encrypt } = require('../models/functions');
 var { encryptionPassword, secretKey } = require('../config');
 
+var generateToken = (payload) => {
+    return encrypt(jwt.sign({
+        dateCreated: new Date().toString(),
+        exp: Math.floor(Date.now()),
+        ...payload
+    }, secretKey));
+}
+
 router.get('/', function (req, res, next) {
     res.send('<h1>API IS UP</h1>')
 });
@@ -23,13 +31,8 @@ router.post('/authenticate', function (req, res, next) {
             if (response.lists.length) {
                 bcrypt.compare(req.body.password, response.lists[0].password, function (err, correct) {
                     if (correct) {
-                        var token = jwt.sign({
-                            dateCreated: new Date().toString(),
-                            userId: response.lists[0]._id,
-                            exp: Math.floor(Date.now()),
-                        }, secretKey);
                         res.send({
-                            token: encrypt(token),
+                            token: generateToken({ userId: response.lists[0]._id }),
                             message: 'Successfully authenticated.',
                             status: 200
                         })
@@ -46,6 +49,7 @@ router.post('/authenticate', function (req, res, next) {
 
 router.use(function (req, res, next) {
     var token = req.headers.authorization || req.query.token;
+
     if (token) {
         jwt.verify(decrypt(token), secretKey, function (err, decoded) {
             if (err) {
@@ -54,6 +58,7 @@ router.use(function (req, res, next) {
                     message: 'Failed to authenticate token.'
                 });
             } else {
+                req.userId = decoded.userId
                 next();
             }
         });
@@ -70,7 +75,9 @@ router.get('/getEntity/:table', function (req, res, next) {
         table: req.params.table,
         ...req.query
     }).then((response) => {
-        res.send({ ...response })
+        res.send({
+            ...response
+        })
     }).catch((err) => {
         res.send({ err })
     });
@@ -85,11 +92,12 @@ router.post('/postEntity/:table', function (req, res, next) {
             sexPartner: 'Jolina Estabillo'
         }
     }).then(response => {
-        res.send({ ...response })
-    }).catch(err => {
         res.send({
-            err
+            ...response,
+            newToken: generateToken({ userId: req.userId })
         })
+    }).catch(err => {
+        res.send({ err })
     })
 })
 
