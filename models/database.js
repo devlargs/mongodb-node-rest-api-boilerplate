@@ -18,16 +18,18 @@ exports.Get = (entity, query = {}) => {
             var connect = createConnection((q) => {
                 q.collection(entity).find(query).toArray((err, lists) => {
                     if (err) {
-                        reject({ err, status: 403 })
+                        reject({ err, status: 412 })
                     } else {
-                        resolve({ lists, status: 200 })
+                        resolve({
+                            length: lists.length,
+                            lists,
+                            status: 200
+                        })
                     }
                 });
-
-
             })
         } else {
-            reject({ message: 'Invalid entity' })
+            reject({ message: 'Invalid entity', status: 412 })
         }
 
     })

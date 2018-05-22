@@ -43,28 +43,32 @@ router.post('/authenticate', function (req, res, next) {
     }
 });
 
-router.post('/verifyToken', function (req, res, next) {
-    res.send({
-        a: req.headers.authorization
-    })
-    // try {
-    //     var verify = jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MjY2MjI4MDYsInVzZXIiOnsiaWQiOiJmdWNraW5nIHBpZWNlIG9mIHNoaXQifSwiYXBwbGljYXRpb25JZCI6ImJhbGFuYXIiLCJpYXQiOjE1MjY2MTkyMDZ9.KZopXPwHQU-Fl9Wl-yV9jUnK-WMqfa4Bz0wV4Ax4VpY', 'secret');
-    //     res.send({ status: 200, verify, message: 'Successfully authenticated.' });
-    // } catch (ex) {
-    //     res.send({ status: 401, message: ex.message })
-    // }
+router.use(function (req, res, next) {
+    var token = req.headers.authorization || req.query.token;
+    if (token) {
+        jwt.verify(token, secretKey, function (err, decoded) {
+            if (err) {
+                res.send({
+                    status: 412,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                next();
+            }
+        });
+    } else {
+        res.send({
+            status: 403,
+            message: 'No token provided.'
+        });
+    }
 });
 
 router.get('/getEntity/:table', function (req, res, next) {
     db.Get(req.params.table).then(function (response) {
-        res.send({
-            response
-        })
+        res.send({ response })
     }).catch(function (err) {
-        console.log(err)
-        res.send({
-            err
-        })
+        res.send({ err })
     })
 });
 
