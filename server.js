@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('myapp:server');
 var http = require('http');
+var cors = require('cors');
 
 var index = require('./routes/index');
 var api = require('./routes/api');
@@ -19,6 +20,9 @@ app.use(bodyParser.urlencoded({ extended: true, parameterLimit: 10000, limit: 10
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(cors());
+app.options('*', cors());
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -68,7 +72,6 @@ function normalizePort(val) {
 }
 
 function onError(error) {
-  console.log(error)
   if (error.syscall !== 'listen') {
     throw error;
   }

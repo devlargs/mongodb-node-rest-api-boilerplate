@@ -3,7 +3,7 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 
-var db = require('../models/database');
+var api = require('../models/api');
 var { decrypt, encrypt } = require('../models/functions');
 var { encryptionPassword, secretKey } = require('../config');
 
@@ -17,7 +17,7 @@ router.post('/authenticate', function (req, res, next) {
     } else if (!req.body.password) {
         res.send({ message: 'password is not defined', status: 403 })
     } else {
-        db.Get('users', {
+        api.Get('users', {
             email: req.body.email
         }).then(function (response) {
             if (response.lists.length) {
@@ -66,9 +66,19 @@ router.use(function (req, res, next) {
 });
 
 router.get('/getEntity/:table', function (req, res, next) {
-    db.Get(req.params.table).then(function (response) {
+    let params = {
+        table: req.params.table
+    };
+
+    if (req.params.query) {
+        if (req.params.query.id) {
+            params.id = req.params.query.id
+        }
+    }
+
+    api.Get(params).then((response) => {
         res.send({ response })
-    }).catch(function (err) {
+    }).catch((err) => {
         res.send({ err })
     })
 });
