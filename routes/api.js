@@ -74,41 +74,60 @@ router.use(function (req, res, next) {
 });
 
 router.get('/getEntity/:table', function (req, res, next) {
-    if (req.collections.includes(req.params.table)) {
-        api.Get({
-            table: req.params.table,
-            ...req.query
-        }).then((response) => {
-            res.send({ ...response })
-        }).catch((err) => {
-            res.send({ err })
-        });
+    if (req.params.table) {
+        if (req.collections.includes(req.params.table)) {
+            api.Get({
+                table: req.params.table,
+                ...req.query
+            }).then((response) => {
+                res.send({ ...response })
+            }).catch((err) => {
+                res.send({ err })
+            });
+        } else {
+            res.send({
+                message: 'Table not found.',
+                status: 404
+            })
+        }
     } else {
         res.send({
-            message: 'Table not found.',
+            message: 'Please enter table.',
             status: 404
         })
     }
 });
 
 router.get('/getEntity/:table/:id', function (req, res, next) {
-    api.Get({
-        table: req.params.table,
-        id: req.params.id,
-        ...req.query
-    }).then((response) => {
-        res.send({ ...response })
-    }).catch((err) => {
-        res.send({ err })
-    });
+    if (req.params.table) {
+        if (req.collections.includes(req.params.table)) {
+            api.Get({
+                table: req.params.table,
+                id: req.params.id,
+                ...req.query
+            }).then((response) => {
+                res.send({ ...response })
+            }).catch((err) => {
+                res.send({ err })
+            });
+        } else {
+            res.send({
+                message: 'Table not found.',
+                status: 404
+            })
+        }
+    } else {
+        res.send({
+            message: 'Please enter table.',
+            status: 404
+        })
+    }
 });
 
 router.post('/postEntity/:table', function (req, res, next) {
     api.Post({
         table: req.params.table,
-        formData: {
-            //formdata here
-        }
+        formData: req.body
     }).then(response => {
         res.send({
             ...response,
@@ -117,6 +136,24 @@ router.post('/postEntity/:table', function (req, res, next) {
     }).catch(err => {
         res.send({ err })
     })
+});
+
+router.put('/putEntity/:table/:id', function (req, res, next) {
+    api.Put({
+        ...req.params,
+        newData: req.body
+
+    }).then(function (response) {
+        res.send({
+            ...response
+        })
+    }).catch(function (er) {
+        res.send({
+            status: 401,
+            er: er
+        })
+    })
+
 })
 
 module.exports = router;
