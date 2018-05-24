@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
+var { getCollections } = require('../models/database');
 
 var api = require('../models/api');
 var { decrypt, encrypt } = require('../models/functions');
@@ -47,39 +48,47 @@ router.post('/authenticate', function (req, res, next) {
     }
 });
 
-// router.use(function (req, res, next) {
-//     var token = req.headers.authorization || req.query.token;
-//     if (token) {
-//         jwt.verify(decrypt(token), secretKey, function (err, decoded) {
-//             if (err) {
-//                 res.send({
-//                     status: 412,
-//                     message: 'Failed to authenticate token.'
-//                 });
-//             } else {
-//                 req.userId = decoded.userId
-//                 next();
-//             }
-//         });
-//     } else {
-//         res.send({
-//             status: 403,
-//             message: 'No token provided.'
-//         });
-//     }
-// });
+router.use(function (req, res, next) {
+    var token = req.headers.authorization || req.query.token;
+    if (token) {
+        jwt.verify(decrypt(token), secretKey, function (err, decoded) {
+            if (err) {
+                res.send({
+                    status: 412,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                getCollections(coll => {
+                    req.collections = coll;
+                    req.userId = decoded.userId;
+                    next();
+                });
+            }
+        });
+    } else {
+        res.send({
+            status: 403,
+            message: 'No token provided.'
+        });
+    }
+});
 
 router.get('/getEntity/:table', function (req, res, next) {
-    api.Get({
-        table: req.params.table,
-        ...req.query
-    }).then((response) => {
+    if (req.collections.includes(req.params.table)) {
+        api.Get({
+            table: req.params.table,
+            ...req.query
+        }).then((response) => {
+            res.send({ ...response })
+        }).catch((err) => {
+            res.send({ err })
+        });
+    } else {
         res.send({
-            ...response,
+            message: 'Table not found.',
+            status: 404
         })
-    }).catch((err) => {
-        res.send({ err })
-    });
+    }
 });
 
 router.get('/getEntity/:table/:id', function (req, res, next) {
@@ -88,9 +97,7 @@ router.get('/getEntity/:table/:id', function (req, res, next) {
         id: req.params.id,
         ...req.query
     }).then((response) => {
-        res.send({
-            ...response,
-        })
+        res.send({ ...response })
     }).catch((err) => {
         res.send({ err })
     });
@@ -100,9 +107,7 @@ router.post('/postEntity/:table', function (req, res, next) {
     api.Post({
         table: req.params.table,
         formData: {
-            name: 'Ralph Largo',
-            age: 22,
-            sexPartner: 'Jolina Estabillo'
+            //formdata here
         }
     }).then(response => {
         res.send({
