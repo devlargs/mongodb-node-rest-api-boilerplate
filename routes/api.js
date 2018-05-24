@@ -47,27 +47,27 @@ router.post('/authenticate', function (req, res, next) {
     }
 });
 
-router.use(function (req, res, next) {
-    var token = req.headers.authorization || req.query.token;
-    if (token) {
-        jwt.verify(decrypt(token), secretKey, function (err, decoded) {
-            if (err) {
-                res.send({
-                    status: 412,
-                    message: 'Failed to authenticate token.'
-                });
-            } else {
-                req.userId = decoded.userId
-                next();
-            }
-        });
-    } else {
-        res.send({
-            status: 403,
-            message: 'No token provided.'
-        });
-    }
-});
+// router.use(function (req, res, next) {
+//     var token = req.headers.authorization || req.query.token;
+//     if (token) {
+//         jwt.verify(decrypt(token), secretKey, function (err, decoded) {
+//             if (err) {
+//                 res.send({
+//                     status: 412,
+//                     message: 'Failed to authenticate token.'
+//                 });
+//             } else {
+//                 req.userId = decoded.userId
+//                 next();
+//             }
+//         });
+//     } else {
+//         res.send({
+//             status: 403,
+//             message: 'No token provided.'
+//         });
+//     }
+// });
 
 router.get('/getEntity/:table', function (req, res, next) {
     api.Get({
