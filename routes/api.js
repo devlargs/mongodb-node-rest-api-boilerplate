@@ -49,7 +49,6 @@ router.post('/authenticate', function (req, res, next) {
 
 router.use(function (req, res, next) {
     var token = req.headers.authorization || req.query.token;
-
     if (token) {
         jwt.verify(decrypt(token), secretKey, function (err, decoded) {
             if (err) {
@@ -73,6 +72,20 @@ router.use(function (req, res, next) {
 router.get('/getEntity/:table', function (req, res, next) {
     api.Get({
         table: req.params.table,
+        ...req.query
+    }).then((response) => {
+        res.send({
+            ...response,
+        })
+    }).catch((err) => {
+        res.send({ err })
+    });
+});
+
+router.get('/getEntity/:table/:id', function (req, res, next) {
+    api.Get({
+        table: req.params.table,
+        id: req.params.id,
         ...req.query
     }).then((response) => {
         res.send({

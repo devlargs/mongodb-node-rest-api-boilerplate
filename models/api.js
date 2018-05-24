@@ -4,19 +4,27 @@ var _ = require('lodash');
 var moment = require('moment');
 
 exports.Get = (params) => {
-    if (params.id) {
-        params.filter = {
-            _id: parseObjectId(params.id)
-        }
-    }
-
     return new Promise((resolve, reject) => {
+        if (params.id) {
+            try {
+                params.filter = {
+                    _id: parseObjectId(params.id)
+                }
+            } catch (ex) {
+                resolve({
+                    length: 0,
+                    lists: [],
+                    status: 200,
+                    message: 'No results found'
+                });
+            }
+        }
+
         createConnection((q) => {
             q.collection(params.table).find(params.filter ? params.filter : {}).toArray((err, lists) => {
                 if (err) {
-                    reject({ err, status: 412 })
+                    reject({ status: 412, message: err.message })
                 } else {
-
                     if (params.fields) {
                         if (Array.isArray(params.fields)) {
                             if (params.fields.length) {
@@ -36,11 +44,11 @@ exports.Get = (params) => {
                             }
                         }
                     }
-
                     resolve({
                         length: lists.length,
                         lists,
-                        status: 200
+                        status: 200,
+                        message: 'Data fetched.'
                     })
                 }
             });
@@ -59,7 +67,8 @@ exports.Post = (params) => {
                     resolve({
                         inserted: lists.ops,
                         length: lists.ops.length,
-                        status: 200
+                        status: 200,
+                        message: 'Successfully added'
                     })
                 }
             })
