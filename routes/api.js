@@ -25,7 +25,7 @@ router.post('/authenticate', function (req, res, next) {
     } else if (!req.body.password) {
         res.send({ message: 'password is not defined', status: 403 })
     } else {
-        api.Get('users', {
+        api.Get({ table: 'users' }, {
             email: req.body.email
         }).then(function (response) {
             if (response.lists.length) {
@@ -76,7 +76,7 @@ router.get('/getEntity/:table', function (req, res, next) {
         ...req.query
     }).then((response) => {
         res.send({
-            ...response
+            ...response,
         })
     }).catch((err) => {
         res.send({ err })

@@ -9,16 +9,17 @@
 git clone git@github.com:devlargs/ramen.git
 ```
 
+#### Edit the port on ./server.js (1234 is the port by default)
+
 #### Install Dependencies (yarn or npm).
 ```
 yarn install
 ```
-or
-```
-npm install
-```
 
-#### Edit the port on ./server.js or run on port: 1234
+#### Then 
+```
+yarn run dev
+```
 
 #### Coming soon...
 ---------
