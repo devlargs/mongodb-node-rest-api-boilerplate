@@ -37,7 +37,10 @@ yarn install
 yarn run dev
 ```
 
-#### Further Instructions coming soon.
+#### Api Documentations
+```
+Go to localhost:1234/documentations
+```
 ---------
 
 #### Love Ramen? Donate. 
