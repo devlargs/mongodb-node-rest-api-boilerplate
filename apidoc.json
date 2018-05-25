@@ -1,0 +1,11 @@
+{
+    "name": "Ramen Docs",
+    "version": "0.0.0",
+    "title": "Ramen",
+    "url": "http://localhost:1234/api",
+    "sampleUrl": "http://localhost:1234/api",
+    "template": {
+        "withCompare": false,
+        "withGenerator": false
+    }
+}

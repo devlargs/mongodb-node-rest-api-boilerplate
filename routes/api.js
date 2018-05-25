@@ -21,15 +21,29 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/authenticate', function (req, res, next) {
+    /**
+     * @api {POST} /authenticate Get Token
+     * @apiGroup Authentication
+     *
+     * @apiParam {String} email Users email address
+     * @apiParam {String} password Users password
+     *
+     * @apiSuccess {String} token Used for Authorization header on request
+    */
+
     if (!req.body.email) {
         res.send({ message: 'email is not defined', status: 403 })
     } else if (!req.body.password) {
         res.send({ message: 'password is not defined', status: 403 })
     } else {
-        api.Get({ table: 'users' }, {
-            email: req.body.email
+        api.Get({
+            table: 'users',
+            filter: {
+                email: req.body.email
+            }
         }).then(function (response) {
             if (response.lists.length) {
+                console.log(response.lists.length, "length")
                 bcrypt.compare(req.body.password, response.lists[0].password, function (err, correct) {
                     if (correct) {
                         res.send({
@@ -42,7 +56,7 @@ router.post('/authenticate', function (req, res, next) {
                     }
                 });
             } else {
-                res.send({ message: 'Invalid username', status: 400 });
+                res.send({ message: 'Username does not exist.', status: 404 });
             }
         })
     }
@@ -99,6 +113,22 @@ router.get('/getEntity/:table', function (req, res, next) {
 });
 
 router.get('/getEntity/:table/:id', function (req, res, next) {
+    /**
+     * @api {GET} /getEntity/:table/:id Get Entity
+     * @apiGroup Entities
+     *
+     * @apiParam (Query) {String} table Specify database table/collection
+     * @apiParam (Query) {String} [id] Pass it on /getEntity/:table/:id if you want to return specific data
+     *
+     * @apiParam (Body) {Object} [filter] Pass specific attributes to return filtered queries. e.g. { address: 'Makati'}
+     * @apiParam (Body) {Object} [fields] Pass this to return specific attributes that you only need. e.g. ['Name', 'Address'] returns [{Name: '', Address: ''}, ...{ and_so_on }] only
+     * 
+     * @apiHeader {String} Authorization Insert generated token here to validate request.
+     * 
+     * @apiSuccess {Number} length Length of the response
+     * @apiSuccess {Object} lists Response content
+     * 
+    */
     if (req.params.table) {
         if (req.collections.includes(req.params.table)) {
             api.Get({
@@ -125,6 +155,20 @@ router.get('/getEntity/:table/:id', function (req, res, next) {
 });
 
 router.post('/postEntity/:table', function (req, res, next) {
+    /**
+     * @api {POST} /postEntity/:table Post Entity
+     * @apiGroup Entities
+     *
+     * @apiParam (Query) {String} table Specify database table/collection
+     *
+     * @apiParam (Body) {Object} formData All things to be added
+     * 
+     * @apiHeader {String} Authorization Insert generated token here to validate request.
+     * 
+     * @apiSuccess {Number} length Length of the response
+     * @apiSuccess {Object} lists Response content
+     * 
+    */
     api.Post({
         table: req.params.table,
         formData: req.body
@@ -139,9 +183,24 @@ router.post('/postEntity/:table', function (req, res, next) {
 });
 
 router.put('/putEntity/:table/:id', function (req, res, next) {
+    /**
+     * @api {PUT} /putEntity/:table/:id Put Entity
+     * @apiGroup Entities
+     *
+     * @apiParam (Query) {String} table Specify database table/collection
+     * @apiParam (Query) {String} id Specify id to be edited
+     *
+     * @apiParam (Body) {Object} formData Payload object that determines all fields to be edited
+     * 
+     * @apiHeader {String} Authorization Insert generated token here to validate request.
+     * 
+     * @apiSuccess {Number} length Length of the response
+     * @apiSuccess {Object} lists Response content
+     * 
+    */
     api.Put({
         ...req.params,
-        newData: req.body
+        newData: req.body.formData
     }).then(function (response) {
         res.send({
             ...response,
@@ -153,6 +212,19 @@ router.put('/putEntity/:table/:id', function (req, res, next) {
 });
 
 router.delete('/deleteEntity/:table/:id', function (req, res, next) {
+    /**
+     * @api {DELETE} /putEntity/:table/:id Delete Entity
+     * @apiGroup Entities
+     *
+     * @apiParam (Query) {String} table Specify database table/collection
+     * @apiParam (Query) {String} id Specify id to be deleted
+     *
+     * @apiHeader {String} Authorization Insert generated token here to validate request.
+     * 
+     * @apiSuccess {String} id Deleted object id
+     * 
+    */
+
     api.Delete({
         ...req.params
     }).then(function (response) {
