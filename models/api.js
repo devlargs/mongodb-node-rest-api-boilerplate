@@ -11,7 +11,7 @@ exports.Get = (params) => {
                     _id: parseObjectId(params.id)
                 }
             } catch (ex) {
-                resolve({
+                reject({
                     status: 200,
                     message: 'No results found'
                 });
@@ -81,8 +81,8 @@ exports.Put = (params) => {
                     _id: parseObjectId(params.id)
                 }
             } catch (ex) {
-                resolve({
-                    status: 200,
+                reject({
+                    status: 304,
                     message: 'No results found to be updated.'
                 });
             }
@@ -100,6 +100,46 @@ exports.Put = (params) => {
                         content: res.value,
                         message: 'Successfully updated'
                     })
+                }
+            })
+        })
+    })
+}
+
+exports.Delete = (params) => {
+    return new Promise((resolve, reject) => {
+        if (params.id) {
+            try {
+                params.filter = {
+                    _id: parseObjectId(params.id)
+                }
+            } catch (ex) {
+                reject({
+                    status: 304,
+                    message: 'No results found to be updated.'
+                });
+            }
+        }
+
+        createConnection(db => {
+            db.collection(params.table).deleteOne(params.filter ? params.filter : {}, function (err, obj) {
+                console.log(err)
+
+                if (err) {
+                    reject({ status: 412, message: `Delete | ${err.message}` })
+                } else {
+                    if (obj.deletedCount) {
+                        resolve({
+                            status: 200,
+                            id: params.id,
+                            message: 'Successfully deleted'
+                        })
+                    } else {
+                        reject({
+                            status: 400,
+                            message: 'No results found to be deleted.'
+                        })
+                    }
                 }
             })
         })

@@ -42,7 +42,7 @@ router.post('/authenticate', function (req, res, next) {
                     }
                 });
             } else {
-                res.send({ message: 'Invalid username' });
+                res.send({ message: 'Invalid username', status: 400 });
             }
         })
     }
@@ -82,7 +82,7 @@ router.get('/getEntity/:table', function (req, res, next) {
             }).then((response) => {
                 res.send({ ...response })
             }).catch((err) => {
-                res.send({ err })
+                res.send({ ...err })
             });
         } else {
             res.send({
@@ -108,7 +108,7 @@ router.get('/getEntity/:table/:id', function (req, res, next) {
             }).then((response) => {
                 res.send({ ...response })
             }).catch((err) => {
-                res.send({ err })
+                res.send({ ...err })
             });
         } else {
             res.send({
@@ -133,8 +133,8 @@ router.post('/postEntity/:table', function (req, res, next) {
             ...response,
             newToken: generateToken({ userId: req.userId })
         })
-    }).catch(err => {
-        res.send({ err })
+    }).catch(ex => {
+        res.send({ ...ex })
     })
 });
 
@@ -142,18 +142,27 @@ router.put('/putEntity/:table/:id', function (req, res, next) {
     api.Put({
         ...req.params,
         newData: req.body
-
     }).then(function (response) {
         res.send({
-            ...response
+            ...response,
+            newToken: generateToken({ userId: req.userId })
         })
-    }).catch(function (er) {
-        res.send({
-            status: 401,
-            er: er
-        })
+    }).catch(function (ex) {
+        res.send({ ...ex })
     })
+});
 
+router.delete('/deleteEntity/:table/:id', function (req, res, next) {
+    api.Delete({
+        ...req.params
+    }).then(function (response) {
+        res.send({
+            ...response,
+            newToken: generateToken({ userId: req.userId })
+        })
+    }).catch(function (ex) {
+        res.send({ ...ex })
+    })
 })
 
 module.exports = router;
