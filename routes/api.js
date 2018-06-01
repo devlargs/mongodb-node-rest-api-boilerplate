@@ -9,11 +9,12 @@ var { decrypt, encrypt } = require('../models/functions');
 var { encryptionPassword, secretKey } = require('../config');
 
 var generateToken = (payload) => {
-    return encrypt(jwt.sign({
+    let data = JSON.stringify({
         dateCreated: new Date().toString(),
         exp: Math.floor(Date.now()),
         ...payload
-    }, secretKey));
+    })
+    return jwt.sign(encrypt(data), secretKey);
 }
 
 router.get('/', function (req, res, next) {
@@ -43,7 +44,6 @@ router.post('/authenticate', function (req, res, next) {
             }
         }).then(function (response) {
             if (response.lists.length) {
-                console.log(response.lists.length, "length")
                 bcrypt.compare(req.body.password, response.lists[0].password, function (err, correct) {
                     if (correct) {
                         res.send({
@@ -65,7 +65,7 @@ router.post('/authenticate', function (req, res, next) {
 router.use(function (req, res, next) {
     var token = req.headers.authorization || req.query.token;
     if (token) {
-        jwt.verify(decrypt(token), secretKey, function (err, decoded) {
+        jwt.verify(token, secretKey, function (err, decoded) {
             if (err) {
                 res.send({
                     status: 412,
@@ -74,6 +74,7 @@ router.use(function (req, res, next) {
             } else {
                 getCollections(coll => {
                     req.collections = coll;
+                    decoded = (JSON.parse(decrypt(decoded)))
                     req.userId = decoded.userId;
                     next();
                 });
