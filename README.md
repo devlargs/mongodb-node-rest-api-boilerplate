@@ -38,7 +38,7 @@ yarn run dev
 
 #### Api Documentations
 ```
-Go to localhost:1234/documentations
+Go to localhost:1234/
 ```
 ---------
 
