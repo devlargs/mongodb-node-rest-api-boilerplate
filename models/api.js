@@ -57,7 +57,15 @@ exports.Get = (params) => {
 exports.Post = (params) => {
     return new Promise((resolve, reject) => {
         createConnection(db => {
-            db.collection(params.table).insertOne(params.formData, (err, lists) => {
+            if(typeof params.formData === "string") {
+                try {
+                    params.formData = JSON.parse(params.formData);
+                } catch (ex) { 
+                    reject({ status: 400, message: "Please send a stringified object or raw object data." })
+                }
+            }
+
+            db.collection(params.table).insertOne({ ...params.formData }, (err, lists) => {
                 if (err) {
                     reject({ status: 412, message: `Post | ${err.message}` })
                 } else {
