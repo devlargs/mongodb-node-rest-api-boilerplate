@@ -6,7 +6,7 @@ var { getCollections } = require('../models/database');
 
 var api = require('../models/api');
 var { decrypt, encrypt } = require('../models/functions');
-var { encryptionPassword, secretKey } = require('../config');
+var { secretKey } = require('../config');
 
 var generateToken = (payload) => {
     let data = JSON.stringify({
@@ -88,9 +88,15 @@ router.use(function (req, res, next) {
     }
 });
 
-router.get('/getEntity/:table', function (req, res, next) {
+router.get('/getEntity/:table', async function (req, res) {
+    const collections = await new Promise((resolve) => {
+        getCollections((res) => {
+            resolve(res);
+        })
+    });
+
     if (req.params.table) {
-        if (req.collections.includes(req.params.table)) {
+        if (collections.includes(req.params.table)) {
             api.Get({
                 table: req.params.table,
                 ...req.query
@@ -113,7 +119,7 @@ router.get('/getEntity/:table', function (req, res, next) {
     }
 });
 
-router.get('/getEntity/:table/:id', function (req, res, next) {
+router.get('/getEntity/:table/:id', async function (req, res, next) {
     /**
      * @api {GET} /getEntity/:table/:id Get Entity
      * @apiGroup Entities
@@ -130,8 +136,15 @@ router.get('/getEntity/:table/:id', function (req, res, next) {
      * @apiSuccess {Object} lists Response content
      * 
     */
+
+   const collections = await new Promise((resolve) => {
+        getCollections((res) => {
+            resolve(res);
+        })
+    });
+
     if (req.params.table) {
-        if (req.collections.includes(req.params.table)) {
+        if (collections.includes(req.params.table)) {
             api.Get({
                 table: req.params.table,
                 id: req.params.id,
@@ -155,7 +168,7 @@ router.get('/getEntity/:table/:id', function (req, res, next) {
     }
 });
 
-router.post('/postEntity/:table', function (req, res, next) {
+router.post('/postEntity/:table', function (req, res) {
     /**
      * @api {POST} /postEntity/:table Post Entity
      * @apiGroup Entities
