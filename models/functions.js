@@ -3,7 +3,7 @@ var { encryptionPassword } = require('../config');
 var algorithm = 'aes-256-ctr';
 
 exports.encrypt = (text) => {
-    var cipher = crypto.createCipher(algorithm, encryptionPassword)
+    var cipher = crypto.createCipheriv(algorithm, encryptionPassword)
     var c = cipher.update(text, 'utf8', 'hex')
     c += cipher.final('hex')
     return c.split('').reverse().join('')
