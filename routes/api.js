@@ -61,19 +61,17 @@ router.post("/authenticate", (req, res) => {
 router.use((req, res, next) => {
     const token = req.headers.authorization || req.query.token;
     if (token) {
-        jwt.verify(token, secretKey, (err, decoded) => {
+        jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.send({
-                    status: 412,
+                    status: 400,
                     message: "Failed to authenticate token."
                 });
             } else {
-                getCollections(coll => {
-                    req.collections = coll;
-                    decoded = (JSON.parse(decrypt(decoded)))
-                    req.userId = decoded.userId;
-                    next();
+                req.userId = await new Promise((resolve) => {
+                    resolve(JSON.parse(decrypt(decoded)).userId);
                 });
+                next();
             }
         });
     } else {
