@@ -49,7 +49,7 @@ router.post("/authenticate", (req, res) => {
 });
 
 router.get("/version", (_, res) => {   
-    res.send({ version: "0.0.1" })
+    res.send({ version: "0.0.2" })
 });
 
 router.use((req, res, next) => {
