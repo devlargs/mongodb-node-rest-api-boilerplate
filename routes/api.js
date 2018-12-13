@@ -17,11 +17,7 @@ var generateToken = (payload) => {
     return jwt.sign(encrypt(data), secretKey);
 }
 
-router.get('/', function (req, res, next) {
-    res.send('<h1>API IS UP</h1>')
-});
-
-router.post('/authenticate', function (req, res, next) {
+router.post('/authenticate', function (req, res) {
     /**
      * @api {POST} /authenticate Get Token
      * @apiGroup Authentication
@@ -88,7 +84,7 @@ router.use(function (req, res, next) {
     }
 });
 
-router.get('/getEntity/:table', async function (req, res) {
+router.get('/:table', async function (req, res) {
     const collections = await new Promise((resolve) => {
         getCollections((res) => {
             resolve(res);
@@ -119,9 +115,9 @@ router.get('/getEntity/:table', async function (req, res) {
     }
 });
 
-router.get('/getEntity/:table/:id', async function (req, res, next) {
+router.get('/:table/:id', async function (req, res, next) {
     /**
-     * @api {GET} /getEntity/:table/:id Get Entity
+     * @api {GET} /:table/:id Get Entity
      * @apiGroup Entities
      *
      * @apiParam (Query) {String} table Specify database table/collection
@@ -168,9 +164,9 @@ router.get('/getEntity/:table/:id', async function (req, res, next) {
     }
 });
 
-router.post('/postEntity/:table', function (req, res) {
+router.post('/:table', function (req, res) {
     /**
-     * @api {POST} /postEntity/:table Post Entity
+     * @api {POST} /:table Post Entity
      * @apiGroup Entities
      *
      * @apiParam (Query) {String} table Specify database table/collection
@@ -216,6 +212,7 @@ router.put('/:table/:id', function (req, res) {
      * @apiSuccess {Object} lists Response content
      * 
     */
+
     api.Put({
         ...req.params,
         newData: req.body.formData
@@ -226,12 +223,12 @@ router.put('/:table/:id', function (req, res) {
         })
     }).catch(function (ex) {
         res.send({ ...ex })
-    })
+    });
 });
 
-router.delete('/deleteEntity/:table/:id', function (req, res, next) {
+router.delete('/:table/:id', function (req, res, next) {
     /**
-     * @api {DELETE} /putEntity/:table/:id Delete Entity
+     * @api {DELETE} /:table/:id Delete Entity
      * @apiGroup Entities
      *
      * @apiParam (Query) {String} table Specify database table/collection
