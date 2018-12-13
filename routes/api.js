@@ -196,9 +196,13 @@ router.post('/postEntity/:table', function (req, res) {
     })
 });
 
-router.put('/putEntity/:table/:id', function (req, res, next) {
+router.put('/:table', (_, res) => {
+    res.send({ status: 400, message: "Please enter id" })
+});
+
+router.put('/:table/:id', function (req, res) {
     /**
-     * @api {PUT} /putEntity/:table/:id Put Entity
+     * @api {PUT} /:table/:id Put Entity
      * @apiGroup Entities
      *
      * @apiParam (Query) {String} table Specify database table/collection
