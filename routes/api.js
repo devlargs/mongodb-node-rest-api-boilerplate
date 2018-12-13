@@ -48,6 +48,10 @@ router.post("/authenticate", (req, res) => {
     }
 });
 
+router.get("/version", (_, res) => {   
+    res.send({ version: "0.0.1" })
+});
+
 router.use((req, res, next) => {
     const token = req.headers.authorization || req.query.token;
     if (token) {
@@ -180,10 +184,6 @@ router.delete("/:table/:id", (req, res) => {
     }).catch((ex) => {
         res.send({ ...ex })
     });
-});
-
-router.get("/version", (_, res) => {   
-    res.send({ version: "0.0.1" })
 });
 
 module.exports = router;
