@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "dev": "nodemon server.js",
-    "apidoc": "./node_modules/.bin/apidoc -i routes/ -o public/documentations/",
+    "apidoc": "./node_modules/.bin/apidoc -f documentation.js -o public/documentations/",
     "heroku-postbuild": "npm run apidoc"
   },
   "dependencies": {
