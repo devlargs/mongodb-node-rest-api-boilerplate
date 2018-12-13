@@ -55,6 +55,7 @@ exports.Get = (params) => {
 };
 
 exports.Post = (params) => {
+    const date = moment().format();
     return new Promise((resolve, reject) => {
         createConnection(db => {
             if(typeof params.formData === "string") {
@@ -65,12 +66,18 @@ exports.Post = (params) => {
                 }
             }
 
+            params.formData = { 
+                ...params.formData, 
+                dateCreated: date,
+                dateUpdated: date
+            }
+
             db.collection(params.table).insertOne({ ...params.formData }, (err, lists) => {
                 if (err) {
                     reject({ status: 412, message: `Post | ${err.message}` })
                 } else {
                     resolve({
-                        inserted: lists.ops,
+                        data: lists.ops,
                         length: lists.ops.length,
                         status: 200,
                         message: 'Successfully added'
