@@ -33,7 +33,7 @@ app.use((_, res, next) => {
 app.use("/", index);
 app.use("/api", api);
 
-app.use((_, _, next) => {
+app.use((_, res, next) => {
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
