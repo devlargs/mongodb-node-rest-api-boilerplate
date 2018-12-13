@@ -13,7 +13,7 @@ const generateToken = (payload) => {
         dateCreated: new Date().toString(),
         exp: Math.floor(Date.now()),
         ...payload
-    })
+    });
     return jwt.sign(encrypt(data), secretKey);
 }
 
@@ -31,9 +31,9 @@ router.post("/authenticate", (req, res) => {
     const { email, password } = req.body;
 
     if (!email) {
-        res.send({ message: "Email is not defined", status: 403 })
+        res.send({ message: "Email is not defined", status: 403 });
     } else if (!password) {
-        res.send({ message: "Password is not defined", status: 403 })
+        res.send({ message: "Password is not defined", status: 403 });
     } else {
         api.Get({
             table: "users",
@@ -46,7 +46,7 @@ router.post("/authenticate", (req, res) => {
                             token: generateToken({ userId: response.lists[0]._id }),
                             message: "Successfully authenticated.",
                             status: 200
-                        })
+                        });
                     } else {
                         res.send({ message: "Incorrect password.", status: 403 });
                     }
@@ -54,7 +54,7 @@ router.post("/authenticate", (req, res) => {
             } else {
                 res.send({ message: "Username does not exist.", status: 404 });
             }
-        })
+        });
     }
 });
 
@@ -86,7 +86,7 @@ router.get("/:table", async (req, res) => {
     const collections = await new Promise((resolve) => {
         getCollections((res) => {
             resolve(res);
-        })
+        });
     });
 
     if (req.params.table) {
@@ -95,21 +95,21 @@ router.get("/:table", async (req, res) => {
                 table: req.params.table,
                 ...req.query
             }).then((response) => {
-                res.send({ ...response })
+                res.send({ ...response });
             }).catch((err) => {
-                res.send({ ...err })
+                res.send({ ...err });
             });
         } else {
             res.send({
                 message: "Table not found.",
                 status: 404
-            })
+            });
         }
     } else {
         res.send({
             message: "Please enter table.",
             status: 404
-        })
+        });
     }
 });
 
@@ -134,7 +134,7 @@ router.get("/:table/:id", async (req, res) => {
    const collections = await new Promise((resolve) => {
         getCollections((res) => {
             resolve(res);
-        })
+        });
     });
 
     if (req.params.table) {
@@ -158,7 +158,7 @@ router.get("/:table/:id", async (req, res) => {
         res.send({
             message: "Please enter table.",
             status: 404
-        })
+        });
     }
 });
 
@@ -184,10 +184,10 @@ router.post("/:table", (req, res) => {
         res.send({
             ...response,
             newToken: generateToken({ userId: req.userId })
-        })
+        });
     }).catch(ex => {
-        res.send({ ...ex })
-    })
+        res.send({ ...ex });
+    });
 });
 
 router.put("/:table", (_, res) => {
@@ -220,9 +220,11 @@ router.put("/:table/:id", (req, res) => {
             newToken: generateToken({ userId: req.userId })
         })
     }).catch((ex) => {
-        res.send({ ...ex })
+        res.send({ ...ex });
     });
 });
+
+router.delete("/:table", (_, res) => res.send({ status: 400, message: "Please enter id to delete" }));
 
 router.delete("/:table/:id", (req, res) => {
     /**
@@ -247,7 +249,7 @@ router.delete("/:table/:id", (req, res) => {
         })
     }).catch((ex) => {
         res.send({ ...ex })
-    })
-})
+    });
+});
 
 module.exports = router;
