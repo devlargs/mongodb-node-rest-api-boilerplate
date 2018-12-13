@@ -1,7 +1,7 @@
-var parseObjectId = require('mongodb').ObjectId;
-var { createConnection } = require('./database')
-var _ = require('lodash');
-var moment = require('moment');
+const parseObjectId = require('mongodb').ObjectId;
+const { createConnection } = require('./database')
+const _ = require('lodash');
+const moment = require('moment');
 
 exports.Get = (params) => {
     return new Promise((resolve, reject) => {
@@ -137,7 +137,7 @@ exports.Delete = (params) => {
         }
 
         createConnection(db => {
-            db.collection(params.table).deleteOne(params.filter ? params.filter : {}, function (err, obj) {
+            db.collection(params.table).deleteOne(params.filter ? params.filter : {}, (err, obj) => {
                 console.log(err)
 
                 if (err) {

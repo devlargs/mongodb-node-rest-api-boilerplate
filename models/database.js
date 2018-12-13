@@ -5,7 +5,7 @@ let { name, url } = database;
 
 let createConnection = exports.createConnection = (cb) => {
     const options = {};
-    return MongoClient.connect(url, options, function (err, client) {
+    return MongoClient.connect(url, options, (_, client) => {
         const db = client.db(name);
         cb(db);
         client.close();

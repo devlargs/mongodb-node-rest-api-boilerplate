@@ -1,25 +1,25 @@
-var crypto = require('crypto');
-var { encryptionPassword } = require('../config');
-var algorithm = 'aes-256-ctr';
+const crypto = require('crypto');
+const { encryptionPassword } = require('../config');
+const algorithm = 'aes-256-ctr';
 
 exports.encrypt = (text) => {
-    var cipher = crypto.createCipheriv(algorithm, encryptionPassword)
-    var c = cipher.update(text, 'utf8', 'hex')
-    c += cipher.final('hex')
-    return c.split('').reverse().join('')
+    const cipher = crypto.createCipheriv(algorithm, encryptionPassword);
+    let c = cipher.update(text, 'utf8', 'hex');
+    c += cipher.final('hex');
+    return c.split('').reverse().join('');
 }
 
 exports.decrypt = (hash) => {
-    var decipher = crypto.createDecipher(algorithm, encryptionPassword)
-    var d = decipher.update(hash.split('').reverse().join(''), 'hex', 'utf8')
-    d += decipher.final('utf8')
-    return d
+    const decipher = crypto.createDecipher(algorithm, encryptionPassword);
+    let d = decipher.update(hash.split('').reverse().join(''), 'hex', 'utf8');
+    d += decipher.final('utf8');
+    return d;
 }
 
 exports.memorySize = (obj) => {
-    var bytes = 0;
+    let bytes = 0;
 
-    function sizeOf(obj) {
+    const sizeOf = (obj) => {
         if (obj !== null && obj !== undefined) {
             switch (typeof obj) {
                 case 'number':
@@ -32,9 +32,9 @@ exports.memorySize = (obj) => {
                     bytes += 4;
                     break;
                 case 'object':
-                    var objClass = Object.prototype.toString.call(obj).slice(8, -1);
+                    const objClass = Object.prototype.toString.call(obj).slice(8, -1);
                     if (objClass === 'Object' || objClass === 'Array') {
-                        for (var key in obj) {
+                        for (let key in obj) {
                             if (!obj.hasOwnProperty(key)) continue;
                             sizeOf(obj[key]);
                         }

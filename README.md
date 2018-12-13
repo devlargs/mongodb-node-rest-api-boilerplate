@@ -10,7 +10,7 @@ git clone git@github.com:devlargs/ramen.git
 
 #### Edit the port on server.js
 ```
-var port = normalizePort(process.env.PORT || '1234'); //edit this one
+const port = normalizePort(process.env.PORT || '1234'); //edit this one
 app.set('port', port); 
 ```
 

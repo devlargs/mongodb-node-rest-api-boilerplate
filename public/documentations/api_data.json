@@ -49,7 +49,7 @@
   },
   {
     "type": "DELETE",
-    "url": "/putEntity/:table/:id",
+    "url": "/:table/:id",
     "title": "Delete Entity",
     "group": "Entities",
     "parameter": {
@@ -101,16 +101,16 @@
     "version": "0.0.0",
     "filename": "routes/api.js",
     "groupTitle": "Entities",
-    "name": "DeletePutentityTableId",
+    "name": "DeleteTableId",
     "sampleRequest": [
       {
-        "url": "http://localhost:1234/api/putEntity/:table/:id"
+        "url": "http://localhost:1234/api/:table/:id"
       }
     ]
   },
   {
     "type": "GET",
-    "url": "/getEntity/:table/:id",
+    "url": "/:table/:id",
     "title": "Get Entity",
     "group": "Entities",
     "parameter": {
@@ -137,14 +137,14 @@
             "type": "Object",
             "optional": true,
             "field": "filter",
-            "description": "<p>Pass specific attributes to return filtered queries. e.g. { address: 'Makati'}</p>"
+            "description": "<p>Pass specific attributes to return filtered queries. e.g. { address: &quot;Makati&quot;}</p>"
           },
           {
             "group": "Body",
             "type": "Object",
             "optional": true,
             "field": "fields",
-            "description": "<p>Pass this to return specific attributes that you only need. e.g. ['Name', 'Address'] returns [{Name: '', Address: ''}, ...{ and_so_on }] only</p>"
+            "description": "<p>Pass this to return specific attributes that you only need. e.g. [&quot;Name&quot;, &quot;Address&quot;] returns [{Name: &quot;&quot;, Address: &quot;&quot;}, ...{ and_so_on }] only</p>"
           }
         ]
       }
@@ -185,16 +185,16 @@
     "version": "0.0.0",
     "filename": "routes/api.js",
     "groupTitle": "Entities",
-    "name": "GetGetentityTableId",
+    "name": "GetTableId",
     "sampleRequest": [
       {
-        "url": "http://localhost:1234/api/getEntity/:table/:id"
+        "url": "http://localhost:1234/api/:table/:id"
       }
     ]
   },
   {
     "type": "POST",
-    "url": "/postEntity/:table",
+    "url": "/:table",
     "title": "Post Entity",
     "group": "Entities",
     "parameter": {
@@ -255,16 +255,16 @@
     "version": "0.0.0",
     "filename": "routes/api.js",
     "groupTitle": "Entities",
-    "name": "PostPostentityTable",
+    "name": "PostTable",
     "sampleRequest": [
       {
-        "url": "http://localhost:1234/api/postEntity/:table"
+        "url": "http://localhost:1234/api/:table"
       }
     ]
   },
   {
     "type": "PUT",
-    "url": "/putEntity/:table/:id",
+    "url": "/:table/:id",
     "title": "Put Entity",
     "group": "Entities",
     "parameter": {
@@ -332,10 +332,10 @@
     "version": "0.0.0",
     "filename": "routes/api.js",
     "groupTitle": "Entities",
-    "name": "PutPutentityTableId",
+    "name": "PutTableId",
     "sampleRequest": [
       {
-        "url": "http://localhost:1234/api/putEntity/:table/:id"
+        "url": "http://localhost:1234/api/:table/:id"
       }
     ]
   }
