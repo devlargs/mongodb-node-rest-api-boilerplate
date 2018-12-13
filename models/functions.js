@@ -3,7 +3,7 @@ const { encryptionPassword } = require('../config');
 const algorithm = 'aes-256-ctr';
 
 exports.encrypt = (text) => {
-    const cipher = crypto.createCipheriv(algorithm, encryptionPassword);
+    const cipher = crypto.createCipher(algorithm, encryptionPassword);
     let c = cipher.update(text, 'utf8', 'hex');
     c += cipher.final('hex');
     return c.split('').reverse().join('');
