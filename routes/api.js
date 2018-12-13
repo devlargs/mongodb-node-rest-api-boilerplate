@@ -182,4 +182,8 @@ router.delete("/:table/:id", (req, res) => {
     });
 });
 
+router.get("/version", (_, res) => {   
+    res.send({ version: "0.0.1" })
+});
+
 module.exports = router;
