@@ -7,3 +7,5 @@ npm-debug.log
 public/documentations/
 public/documentations/*
 public/documentations/*/
+
+package-lock.json
